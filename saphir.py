@@ -1,5 +1,11 @@
+#|----------|
+#|          |
+#|  Import  |
+#|          |
+#|----------|
+
 import sounddevice as sd
-from modules.mod_utile import voix
+from modules.voix import voix
 from playsound3 import playsound
 from vosk import Model, KaldiRecognizer
 import queue
@@ -9,12 +15,14 @@ import os
 import edge_tts
 
 
+
+
+
 #|---------------------------------------|
 #|                                       |
 #|  Constantes et variables principales  |
 #|                                       |
 #|---------------------------------------|
-
 
 debug= True
 
@@ -35,6 +43,10 @@ q = queue.Queue()
 model = Model(MODEL_PATH)
 recognizer = KaldiRecognizer(model, SAMPLE_RATE)
 
+
+
+
+
 #|----------------|
 #|                |
 #|  Dictionnaire  |
@@ -50,12 +62,12 @@ liste_commandes = ["stop", #0
 
 
 
+
 #|---------------------|
 #|                     |
 #|  Fonctions de base  |
 #|                     |
 #|---------------------|
-
 
 # parler
 
@@ -95,13 +107,16 @@ def ecouter():
             return text
     return ""
 
+
+
+
+
 #|---------------------------------------|
 #|                                       |
 #|   Fonction de detection de commande   |
 #|                                       |
 #|---------------------------------------|
 
-#detect commandes
 
 def detection_commande():
         global commande_id
@@ -124,9 +139,18 @@ def executer_commande():
     elif commande_id == -1:
         dire("Désolé, je n'ai pas compris la commande, peux-tu répéter ?")
         assistant_actif = True
-    
 
-# Main loop
+
+
+
+
+
+#|---------------|
+#|               |
+#|   Main loop   |
+#|               |
+#|---------------|
+
 
 with sd.RawInputStream(samplerate=SAMPLE_RATE, blocksize=8000, dtype="int16", channels=1, callback=audio_callback):
 
