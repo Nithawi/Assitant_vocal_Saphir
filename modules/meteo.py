@@ -1,8 +1,11 @@
 import requests
 import geocoder
 from modules.principal.parler import dire
+from dotenv import load_dotenv
+import os
 
-api_key = "votre_clé_api_openweathermap"  # Remplacez par votre propre clé API OpenWeatherMap
+load_dotenv("key.env")
+api_key = os.getenv("meteo_key")  # Remplacez par votre propre clé API OpenWeatherMap
 ville = "Paris"
 
 def get_ville():
