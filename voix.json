@@ -1,0 +1,54 @@
+{
+    "Bonjour": [
+        {
+            "name": "oui",
+            "file": "son\\oui.mp3"
+            
+        },
+
+        {
+            "name": "abientot",
+            "file": "son\\abientot.mp3"
+        },
+
+        {
+            "name": "aider",
+            "file": "son\\aider.mp3"
+        },
+
+        {
+            "name": "service",
+            "file": "son\\service.mp3"
+        }
+
+    ],
+
+    "Bey": [
+        {
+            "name": "abientot",
+            "file": "son\\abientot.mp3"
+        },
+        {
+            "name": "bey",
+            "file": "son\\bey.mp3"
+        },
+
+        {
+            "name": "aurevoir",
+            "file": "son\\aurevoir.mp3"
+        }
+    ]
+}
+        
+
+
+
+
+
+
+
+
+
+
+
+
