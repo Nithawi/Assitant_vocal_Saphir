@@ -6,13 +6,13 @@
 
 
 import sounddevice as sd
-import requests
 from modules.heure import heure
 from modules.sounds.voix import voix
 from modules.principal.parler import dire
 from modules.principal.ecouter import ecouter, audio_callback
 from modules.recherche import rechercher
 from modules.principal.model import SAMPLE_RATE
+from modules.meteo import meteo
 import modules.principal.state as state
 
 
@@ -54,9 +54,7 @@ liste_commandes = ["stop", #0
                    "chercher", #5
                    "recherche", #6
                    "rechercher", #7
-                   "augmente", #8
-                   "baisse", #9
-                   "météo", #10
+                   "météo", #8
                   ]
 
 
@@ -110,7 +108,8 @@ def executer_commande():
     elif commande_id == 4 or commande_id == 5 or commande_id == 6 or commande_id == 7: # cherche
         rechercher(text)
 
-        
+    elif commande_id == 8: # météo
+        meteo()
 
 
 
