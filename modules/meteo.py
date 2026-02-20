@@ -2,7 +2,7 @@ import requests
 import geocoder
 from modules.principal.parler import dire
 
-api_key = "4ba8aec33cf763837edd9a5b0d362aac"
+api_key = "votre_clé_api_openweathermap"  # Remplacez par votre propre clé API OpenWeatherMap
 ville = "Paris"
 
 def get_ville():
