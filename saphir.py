@@ -33,6 +33,9 @@ debug = True
 commande_id = -1
 
 
+
+
+
 #|----------------|
 #|                |
 #|  Dictionnaire  |
@@ -46,6 +49,8 @@ liste_commandes = ["stop", #0
                    "step", #2
                    "heure" #3
                   ]
+
+
 
 
 
@@ -92,7 +97,6 @@ def executer_commande():
     
     elif commande_id == 3: # heure
         heure()
-
 
 
 
