@@ -6,16 +6,17 @@ import os
 
 load_dotenv("key.env")
 api_key = os.getenv("meteo_key")  # Remplacez par votre propre clé API OpenWeatherMap
-ville = "Paris"
+ville = "Paris" 
 
 def get_ville():
-    # Récupère la localisation via l'IP
+     # Récupère la localisation via l'IP
     g = geocoder.ip('me')
     if g.ok:
         return g.city
-
+    return "Paris"  # Valeur par défaut si la localisation échoue
 
 def meteo():
+    
     ville = get_ville()
     url = f"http://api.openweathermap.org/data/2.5/weather?q={ville}&appid={api_key}&lang=fr"
 
