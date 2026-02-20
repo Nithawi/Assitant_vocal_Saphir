@@ -10,7 +10,7 @@ def dire(phrase):
 
 async def parler(phrase):
     if os.path.exists("temp.mp3"):
-        os.remove("temp.mp3")
+        os.remove("temp.mp3") # Supprimer le fichier temporaire s'il existe déjà
     communicate = edge_tts.Communicate(phrase, voice = "fr-CH-ArianeNeural")
     await communicate.save("temp.mp3")
     playsound("temp.mp3")
