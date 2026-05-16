@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saphir</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<div class="app">
+
+  <!-- ── En-tête ── -->
+  <header>
+    <div class="nom">
+      <span class="header-name">Sa<em>ph</em>ir</span>
+    </div>
+
+    <div class="status-box" id="status-box" data-s="off">
+      <div class="status-rond"></div>
+      <span class="status-info" id="status-info">Hors ligne</span>
+    </div>
+  </header>
+
+  <!-- ── Orbe ── -->
+  <div class="orb-container">
+    <div style="text-align:center">
+      <div class="orb" id="orb" data-s="off">
+        <div class="orb-ring"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-core"></div>
+      </div>
+      <div class="orb-info" id="orb-info">En attente</div>
+    </div>
+  </div>
+
+  <!-- ── Mode texte ── -->
+  <div id="text-mode-container" class="text-mode">
+    <input type="text" id="user-input" onkeydown="gererEntree(event)" placeholder="Écrivez une commande..." disabled/>
+  </div>
+
+  <!-- ── Contrôles ── -->
+  <div class="controls">
+    <button class="btn btn-start" id="btn-start" onclick="demarrer()">
+      <i class="ico">▶</i>
+      <span class="btn-label">Démarrer</span>
+    </button>
+
+    <button class="btn btn-stop" id="btn-stop" onclick="arreter()" disabled>
+      <i class="ico">◼</i>
+      <span class="btn-label">Arrêter</span>
+    </button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
