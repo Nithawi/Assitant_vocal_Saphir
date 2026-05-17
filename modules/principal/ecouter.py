@@ -14,7 +14,7 @@ def audio_callback(indata, frames, time, status):
 def ecouter():
     global text
     try:
-        data = q.get(timeout=2)
+        data = q.get(timeout=6)
     except queue.Empty:
         print("micro desactivé")
         return ""

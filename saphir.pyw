@@ -18,6 +18,9 @@ from modules.meteo import meteo
 import modules.principal.state as state
 import time
 from playsound3 import playsound
+import pyautogui
+
+from modules.timer import reglage_minuteur
 
 #interface 
 import threading
@@ -40,6 +43,7 @@ text = ""
 debug = True
 text_mode = True
 commande_par_texte = False
+spam = False
 
 
 # id de la commande détectée
@@ -71,7 +75,12 @@ liste_commandes = ["stop", #0
                    "météo", #10
                    "meteo", #11
                    "rien", #12
-                   "veille" #13
+                   "veille", #13
+                   "pause", #14  
+                   "play", #15 
+                   "volume", #16 
+                   "minuteur", #17
+                   "timer" #18
                   ]
 
 
@@ -99,16 +108,39 @@ def ui_status(status):
 
 
 def detection_commande():
-        global commande_id
-        commande_id = -1
+    # AJOUT ESSENTIEL : On indique à Python qu'on utilise et modifie la variable globale text
+    global commande_id, text
+    commande_id = -1
 
-        #diviser la phrase en mots et vérifier si l'un d'eux correspond à une commande
-        texte_split = text.lower().split()
-        for mot in texte_split:
-            if mot in liste_commandes:
+    # A. DÉTECTION PRIORITAIRE : Expressions entières (comme "ça va")
+    if "comment ça va" in text or "comment ca va" in text or "comment tu va" in text or "ça va" in text or "ca va" in text or "cv" in text or "ça roule" in text or "ca roule" in text:
+        commande_id = 19
+        return
+
+    # B. DÉTECTION DES COMMANDES SIMPLES (Heure, météo, stop...)
+    texte_split = text.split()
+    for mot in texte_split:
+        if mot in liste_commandes:
+            # On ignore les mots clés de recherche qui ont leur propre logique en dessous
+            if mot not in ["cherche", "chercher", "recherche", "rechercher"]:
                 commande_id = liste_commandes.index(mot)
+                if debug:
+                    print(f"commande détectée via mot unique: {mot} (id: {commande_id})")
+                return
+
+    # C. GESTION DU DÉCOUPAGE DE LA RECHERCHE
+    mots_recherche = ["rechercher", "recherche", "chercher", "cherche"]
+    for mot in mots_recherche:
+        if mot in text:
+            # On simule l'ID correspondant à "cherche" (index 6)
+            commande_id = 6 
+            
+            # Découpage magique : supprime tout ce qui est avant le mot clé
+            text = text.split(mot, 1)[1].strip()
+            
             if debug:
-                    print(f"commande détectée: {mot} (id: {commande_id})")
+                print(f"commande de recherche détectée via '{mot}' | Requête utile restante : {text}")
+            break
 
 
 #|---------------------------------------|
@@ -123,7 +155,6 @@ def executer_commande():
 
     if commande_id == -1:
         dire("Désolé, je n'ai pas compris la commande.")
-        state.assistant_actif = False
 
     
     elif commande_id == 0 or commande_id == 1 or commande_id == 2: # stop or bey or step
@@ -142,8 +173,35 @@ def executer_commande():
 
     elif commande_id == 12 or commande_id == 13: # rien or veille
         dire("Ok, je me met en veille.")
-        state.assistant_actif = False
+        
+    elif commande_id == 14 or commande_id == 15: # pause or play
+        pyautogui.press("playpause")
+        print("[Média] Pause/Play .")
 
+    elif commande_id == 16: # volume
+        if "monte" in text or "augmente" in text or "up" in text:
+            for _ in range(9):
+                pyautogui.press("volumeup")
+            dire("Volume augmenté.")
+            print("[Média] Volume augmenté.")
+        elif "baisse" in text or "diminue" in text or "down" in text:
+            for _ in range(9):
+                pyautogui.press("volumedown")
+            dire("Volume diminué.")
+            print("[Média] Volume diminué.")
+        elif "mute" in text or "muet" in text or "silence" in text or "coupe" in text or "coupes" in text or "demute" in text or "démute" in text or "unmute" in text or "remet" in text:
+            dire("Volume coupé.")
+            pyautogui.press("volumemute")
+            print("[Média] Volume coupé.")
+        else:
+            dire("Désolé, je n'ai pas compris si vous vouliez augmenter ou baisser le volume.")
+            print("[Média] Commande de volume non comprise.")
+
+    elif commande_id == 17 or commande_id == 18: # minuteur
+        reglage_minuteur(text)
+
+    elif commande_id == 19: # ça va
+        voix("humeur")
 
 
 
@@ -168,49 +226,78 @@ def boucle_saphir():
  
     with sd.RawInputStream(samplerate=SAMPLE_RATE, blocksize=8000, dtype="int16", channels=1, callback=audio_callback):
         try:
-            while True:
+            while True: 
                 if not getattr(state, 'micro', True):
                     time.sleep(0.2)
-                    continue
+                    continue 
 
                 text = ecouter()
                 print("ecoute...")
  
-                if "saphir" in text.lower():
-                    print(f"Vous avez dit {text}")
-                    ui_status("speaking") 
-                    voix("Bonjour")
-                    
-                    if os.path.exists("temp.mp3"):
-                        try: os.remove("temp.mp3")
-                        except: pass
+                if text: # On vérifie d'abord si Vosk a capté du texte
+                    texte_ecoute = text.lower() 
 
-                    ui_status("active")
-                    state.assistant_actif = True
-                    try:
-                        playsound("modules/sounds/activation.mp3")
-                    except Exception as e:
-                        print(f"Erreur son activation: {e}")
-                    continue
- 
-                if state.assistant_actif and text:
-                    state.assistant_actif = False 
-                    detection_commande()
+                    # ─── CAS 1 : L'ASSISTANT EST EN VEILLE ───
+                    if not state.assistant_actif: 
+                        if "saphir" in texte_ecoute: 
+                            print(f"Activation par mot-clé ! Phrase complète : {text}")
+                            
+                            # On passe l'assistant en mode actif
+                            state.assistant_actif = True
+                            ui_status("active") 
 
-                    ui_status("speaking") 
-                    executer_commande()   
-                    
-                    if os.path.exists("temp.mp3"):
-                        try: os.remove("temp.mp3")
-                        except: pass
-                    
-                    if state.assistant_actif:
-                        ui_status("active")
-                    else:
+                            # CHRONIQUE : On coupe la phrase pour isoler la commande après "saphir"
+                            # Exemple: "saphir donne moi la météo" -> "donne moi la météo"
+                            phrase_commande = texte_ecoute.split("saphir", 1)[1].strip()
+
+                            if phrase_commande:
+                                # Si l'utilisateur a enchaîné sa commande, on met à jour 'text' et on l'exécute directement !
+                                text = phrase_commande
+                                detection_commande()
+                                ui_status("speaking")
+                                executer_commande()
+                                
+                                # Nettoyage et retour en veille automatique après l'action
+                                if os.path.exists("temp.mp3"):
+                                    try: 
+                                        os.remove("temp.mp3") 
+                                    except: 
+                                        pass 
+                                state.assistant_actif = False
+                                ui_status("idle") 
+                            else:
+                                # Si l'utilisateur a juste dit "Saphir" sans rien ajouter
+                                ui_status("speaking")
+                                voix("Bonjour")
+                                if os.path.exists("temp.mp3"): 
+                                    try: 
+                                        os.remove("temp.mp3")
+                                    except: 
+                                        pass
+                                ui_status("active")
+                                try:
+                                    playsound("modules/sounds/activation.mp3") 
+                                except Exception as e:
+                                    print(f"Erreur son activation: {e}")
+                            continue 
+
+                    # ─── CAS 2 : L'ASSISTANT ÉTAIT DÉJÀ ACTIF (il attendait une suite) ───
+                    elif state.assistant_actif:
+                        state.assistant_actif = False 
+                        detection_commande() 
+                        ui_status("speaking") 
+                        executer_commande() 
+                        
+                        if os.path.exists("temp.mp3"):
+                            try: 
+                                os.remove("temp.mp3")
+                            except: 
+                                pass 
+                        
                         ui_status("idle") 
-                        continue
+                        continue 
  
-        except KeyboardInterrupt:
+        except KeyboardInterrupt: 
             print("\nFin du programme")
 
 #|---------------------------------------|
@@ -233,39 +320,48 @@ class SaphirAPI:
     def arreter(self):
         ui_status("off") 
         if os.path.exists("temp.mp3"):
-            try: os.remove("temp.mp3")
-            except: pass
+            try: 
+                os.remove("temp.mp3")
+            except: 
+                pass
         window_ref.destroy()
  
     def get_status(self):
         return {"actif": state.assistant_actif}
     
     def envoyer_texte(self, texte_recu):
-        """Fonction appelée par le JavaScript de l'interface"""
-        global text, commande_par_texte
+        global text, commande_par_texte, spam
+        # Anti-spam
+        if spam == True:
+            print("Spam détecté : commande déjà en cours de traitement.")
+            return {"status": "en cours"}
         if texte_recu.strip():
+            spam = True
             commande_par_texte = True
             state.micro = False
-            
+                
             text = texte_recu
             print(f"[Interface] Commande écrite reçue : {text}")
-            
+                
             detection_commande()
-            
+                
             ui_status("speaking")
             executer_commande()
-            
-            if os.path.exists("temp.mp3"):
-                try: os.remove("temp.mp3")
-                except: pass
                 
+            if os.path.exists("temp.mp3"):
+                try: 
+                    os.remove("temp.mp3")
+                except: 
+                    pass
+                    
             if state.assistant_actif:
                 ui_status("active")
             else:
                 ui_status("idle")
-            
-            state.micro = True
                 
+            state.micro = True
+            spam = False
+        
         return {"status": "reçu"}
     
 

@@ -32,6 +32,32 @@
             "name": "aurevoir",
             "file": "modules/sounds/son/aurevoir.mp3"
         }
+    ],
+
+    "humeur": [
+        {
+            "name": "cv",
+            "file": "modules/sounds/son/cv.mp3"
+        },
+        {
+            "name": "bien",
+            "file": "modules/sounds/son/bien.mp3"
+        },
+
+        {
+            "name": "mal",
+            "file": "modules/sounds/son/mal.mp3"
+        },
+
+        {
+            "name": "fatigue",
+            "file": "modules/sounds/son/fatigue.mp3"
+        },
+        
+        {
+            "name": "stress",
+            "file": "modules/sounds/son/stress.mp3"
+        }
     ]
 }
         
