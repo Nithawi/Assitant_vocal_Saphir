@@ -19,7 +19,7 @@ def reglage_minuteur(phrase):
     chiffres_en_lettres = {
         "un": 1, "une": 1, "deux": 2, "trois": 3, "quatre": 4,
         "cinq": 5, "six": 6, "sept": 7, "huit": 8, "neuf": 9,
-        "dix": 10, "quinze": 15, "vingt": 20, "trente": 30,
+        "dix": 10, "onze": 11, "douze": 12, "treize": 13, "quatorze": 14, "quinze": 15, "dix-sept": 17,"dix-huit": 18, "dix-neuf": 19, "vingt": 20, "trente": 30,
         "quarante": 40, "cinquante": 50, "soixante": 60
     }
 
