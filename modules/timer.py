@@ -53,7 +53,7 @@ def reglage_minuteur(phrase):
                     heures += int(avant)
 
         # LES MINUTES
-        if "minute" in mot or "min" in mot or mot == "m":
+        if "minute" in mot or "minutes" in mot or "min" in mot or "mins" in mot or mot == "m" or mot == "mn" or mot == "mns":
             if i - 1 >= 0:
                 avant = mots[i - 1]
                 dizaine = 0
@@ -66,7 +66,7 @@ def reglage_minuteur(phrase):
                     minutes = int(avant)
 
         # LES SECONDES
-        elif "seconde" in mot or "secondes" in mot or "sec" in mot or mot == "s":
+        elif "seconde" in mot or "secondes" in mot or "sec" in mot or "secs" in mot or mot == "s":
             if i - 1 >= 0:
                 avant = mots[i - 1]
                 dizaine = 0

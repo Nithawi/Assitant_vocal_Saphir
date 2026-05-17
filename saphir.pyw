@@ -211,8 +211,6 @@ def executer_commande():
 #|   Main loop   |
 #|               |
 #|---------------|
-
-# Cette fonction contient la boucle principale de l'assistant vocal.
  
 def boucle_saphir():
     global text
